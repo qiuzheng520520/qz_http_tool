@@ -1,15 +1,7 @@
 #!/bin/bash
 
-#sql注入检测参数
-sql_com1="%27"											#	"'"		#异常
-sql_com2="%27%20and%20%271%27=%271"						#   "' and '1'='1"			#正常
-sql_com3="%27%20and%20%271%27=%272"						#	"' and '1'='2"			#异常
-sql_com4="%20and%201=1"									#	" and 1=1"			#正常
-sql_com5="%20and%201=2"									#	" and 1=2"			#异常
 
-search_wd="学校"						#"inurl:\".php?id=\""
-sql_www=""
-dist_url=""
+search_wd="inurl:.php?id="						#百度搜索关键词
 
 #从一个网站搜索注入点
 get_site()
@@ -34,20 +26,26 @@ baidu_search()
 		#打印网址和服务器类型
 		echo $url_3 >> url.txt
 	done < temp_1.txt
+	uniq url.txt > url_1.txt	#去除重复的url地址
 }
 
 #sql注入点检测，使用百度
 http_tool_url()
 {
-	echo "-------------"
+	while read oneline
+	do
+		curl -s $oneline > html.txt
+	done < url_1.txt
 }
 
 main()
 {
 	baidu_search
-	http_tool_baidu
+	#http_tool_url
 }
 
 main
+
+
 
 
